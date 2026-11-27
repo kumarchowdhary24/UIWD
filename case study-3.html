@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Attendance / Exam Eligibility Checker</title>
+  <style>
+    body { font-family:Arial, sans-serif; max-width:900px; margin:24px auto; padding:0 16px; }
+    h1 { color:#1f3a5f; }
+    .row { display:flex; flex-wrap:wrap; gap:10px; margin-bottom:10px; }
+    input, select, button { padding:8px; }
+    button { background:#1f3a5f; color:#fff; border:0; border-radius:4px; cursor:pointer; }
+    #err { color:#c0392b; min-height:1.2em; }
+    table { border-collapse:collapse; width:100%; margin-top:14px; }
+    th, td { border:1px solid #bbb; padding:7px; text-align:center; }
+    th { background:#eaf2f8; }
+    .ok { color:#1e8449; font-weight:bold; } .no { color:#c0392b; font-weight:bold; }
+  </style>
+</head>
+<body>
+  <h1>Attendance / Exam Eligibility Checker</h1>
+  <p><small>Demo thresholds only – replace with official university rules.</small></p>
+  <div class="row">
+    <input id="name" placeholder="Student name">
+    <input id="roll" placeholder="Roll number">
+    <input id="att" type="number" placeholder="Attendance %">
+    <input id="marks" type="number" placeholder="Academic score">
+    <select id="exam"><option>Minor-1</option><option>Minor-2</option><option>Endterm</option></select>
+    <button id="add">Check &amp; Add</button>
+  </div>
+  <div id="err"></div>
+  <table>
+    <thead><tr><th>#</th><th>Name</th><th>Roll No</th><th>Attendance</th><th>Score</th>
+      <th>Exam</th><th>Status</th></tr></thead>
+    <tbody id="out"></tbody>
+  </table>
+<script>
+  // Demo rules (placeholders): {minAttendance, minScore} per examination
+  const RULES = { "Minor-1": {att:65, score:0}, "Minor-2": {att:70, score:20}, "Endterm": {att:75, score:35} };
+  const students = [];                       // array of student objects
+ 
+  function validate(s) {
+    if (!s.name || !s.roll) return "Name and roll number are required.";
+    if (isNaN(s.att) || s.att < 0 || s.att > 100) return "Attendance must be between 0 and 100.";
+    if (isNaN(s.score) || s.score < 0 || s.score > 100) return "Score must be between 0 and 100.";
+    return "";
+  }
+  function check(s) {
+    const r = RULES[s.exam];
+    if (s.att < r.att) return "Not Eligible (attendance < " + r.att + "%)";
+    if (s.score < r.score) return "Not Eligible (score < " + r.score + ")";
+    return "Eligible";
+  }
+  function render() {
+    const tbody = document.getElementById("out");
+    tbody.innerHTML = "";
+    for (let i = 0; i < students.length; i++) {          // loop over all records
+      const s = students[i];
+      const cls = s.status === "Eligible" ? "ok" : "no";
+      tbody.innerHTML += `<tr><td>${i+1}</td><td>${s.name}</td><td>${s.roll}</td>
+        <td>${s.att}%</td><td>${s.score}</td><td>${s.exam}</td><td class="${cls}">${s.status}</td></tr>`;
+    }
+  }
+  document.getElementById("add").addEventListener("click", () => {
+    const v = id => document.getElementById(id).value;
+    const s = { name: v("name").trim(), roll: v("roll").trim(), att: parseFloat(v("att")),
+                score: parseFloat(v("marks")), exam: v("exam") };
+    const msg = validate(s);
+    document.getElementById("err").textContent = msg;
+    if (msg) return;
+    s.status = check(s);
+    students.push(s);
+    render();
+  });
+</script>
+</body>
+</html>
