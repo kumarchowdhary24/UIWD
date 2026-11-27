@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Student Service Portal</title>
+  <style>
+    body { font-family:Arial, sans-serif; max-width:720px; margin:24px auto; padding:0 16px; }
+    h1 { color:#1f3a5f; }
+    label { display:block; margin-top:10px; font-weight:bold; }
+    input, select, textarea { width:100%; padding:8px; box-sizing:border-box; }
+    .hidden { display:none; }
+    .error { color:#c0392b; font-size:.85rem; }
+    button { margin-top:14px; padding:9px 18px; background:#1f3a5f; color:#fff; border:0; border-radius:4px; }
+    #summary { margin-top:18px; padding:12px; background:#e9f7ef; border-left:5px solid #1e8449; }
+    #log li { margin:4px 0; }
+  </style>
+</head>
+<body>
+  <h1>Student Service Portal</h1>
+  <label for="service">Select Service</label>
+  <select id="service">
+    <option value="">-- Choose --</option>
+    <option value="leave">Leave Request</option>
+    <option value="bonafide">Bonafide Certificate</option>
+    <option value="elective">Elective Course Registration</option>
+  </select>
+ 
+  <form id="form" class="hidden" novalidate>
+    <label for="name">Student Name *</label><input id="name">
+    <label for="roll">Roll Number *</label><input id="roll">
+    <div id="leave" class="hidden">
+      <label for="from">From Date *</label><input id="from" type="date">
+      <label for="to">To Date *</label><input id="to" type="date">
+      <label for="reason">Reason *</label><textarea id="reason" rows="2"></textarea>
+    </div>
+    <div id="bonafide" class="hidden">
+      <label for="purpose">Purpose *</label>
+      <select id="purpose"><option value="">-- Choose --</option><option>Bank Loan</option>
+        <option>Passport</option><option>Scholarship</option></select>
+    </div>
+    <div id="elective" class="hidden">
+      <label for="course">Elective Course *</label>
+      <select id="course"><option value="">-- Choose --</option><option>Machine Learning</option>
+        <option>Cloud Computing</option><option>Cyber Security</option></select>
+    </div>
+    <div id="error" class="error"></div>
+    <button type="submit">Submit Request</button>
+  </form>
+ 
+  <div id="summary" class="hidden"></div>
+  <h3>Requests this session</h3>
+  <ul id="log"></ul>
+ 
+<script>
+  const requests = [];                                    // session storage (array)
+  const $ = id => document.getElementById(id);
+  const sections = ["leave", "bonafide", "elective"];
+ 
+  $("service").addEventListener("change", function () {
+    $("form").classList.toggle("hidden", !this.value);
+    sections.forEach(s => $(s).classList.toggle("hidden", s !== this.value));
+    $("error").textContent = ""; $("summary").classList.add("hidden");
+  });
+ 
+  function validate(type) {
+    if (!$("name").value.trim() || !$("roll").value.trim()) return "Name and roll number are required.";
+    if (type === "leave") {
+      if (!$("from").value || !$("to").value || !$("reason").value.trim()) return "Fill all leave fields.";
+      if ($("to").value < $("from").value) return "End date cannot be before start date.";
+    }
+    if (type === "bonafide" && !$("purpose").value) return "Select a purpose.";
+    if (type === "elective" && !$("course").value) return "Select a course.";
+    return "";
+  }
+  function buildRequest(type) {
+    const r = { type, name: $("name").value.trim(), roll: $("roll").value.trim() };
+    if (type === "leave") Object.assign(r, { from: $("from").value, to: $("to").value, reason: $("reason").value });
+    if (type === "bonafide") r.purpose = $("purpose").value;
+    if (type === "elective") r.course = $("course").value;
+    return r;
+  }
+  $("form").addEventListener("submit", e => {
+    e.preventDefault();
+    const type = $("service").value, msg = validate(type);
+    $("error").textContent = msg;
+    if (msg) return;
+    const r = buildRequest(type);
+    requests.push(r);
+    const li = document.createElement("li");
+    li.textContent = `#${requests.length} ${r.type.toUpperCase()} – ${r.name} (${r.roll})`;
+    $("log").appendChild(li);
+    $("summary").innerHTML = `<b>Request submitted successfully.</b><br>Reference No: REQ-${1000 + requests.length}
+      <br>Type: ${type}<br>Student: ${r.name} (${r.roll})`;
+    $("summary").classList.remove("hidden");
+    $("form").reset();
+  });
+</script>
+</body>
+</html>
