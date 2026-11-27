@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Student Services Homepage</title>
+  <style>
+    :root { --primary:#5b3cc4; --dark:#1b1642; --light:#f5f3ff; }
+    * { box-sizing:border-box; margin:0; padding:0; }
+    body { font-family:'Segoe UI', Arial, sans-serif; background:var(--light); color:#222; }
+    header { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap;
+             background:var(--dark); color:#fff; padding:14px 28px; }
+    header h1 { font-size:1.3rem; }
+    nav { display:flex; gap:20px; }
+    nav a { color:#fff; text-decoration:none; padding:4px 2px; border-bottom:2px solid transparent; }
+    nav a:hover, nav a:focus { border-color:#ffd166; outline:none; }
+    .banner { background:linear-gradient(120deg,var(--primary),#2a9df4); color:#fff;
+              text-align:center; padding:60px 20px; animation:fade 1s ease; }
+    .banner h2 { font-size:2.2rem; margin-bottom:8px; }
+    .grid { display:grid; grid-template-columns:repeat(3,1fr); gap:22px; max-width:1100px;
+            margin:36px auto; padding:0 20px; }
+    .card { background:#fff; border-radius:12px; padding:24px; text-align:center;
+            box-shadow:0 2px 8px #0002; transition:transform .25s, box-shadow .25s; }
+    .card:hover, .card:focus-within { transform:translateY(-6px); box-shadow:0 10px 20px #0003; }
+    .icon { font-size:2.4rem; }
+    .card h3 { margin:10px 0 6px; color:var(--primary); }
+    .card a { display:inline-block; margin-top:12px; padding:8px 16px; border-radius:20px;
+              background:var(--primary); color:#fff; text-decoration:none; }
+    footer { background:var(--dark); color:#ddd; text-align:center; padding:16px; }
+    @keyframes fade { from { opacity:0; transform:translateY(-10px); } to { opacity:1; } }
+    @media (max-width:900px) { .grid { grid-template-columns:repeat(2,1fr); } }
+    @media (max-width:560px) { .grid { grid-template-columns:1fr; } nav { gap:12px; } }
+    @media (prefers-reduced-motion:reduce) { * { animation:none !important; transition:none !important; } }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Malla Reddy University</h1>
+    <nav><a href="#">Home</a><a href="#services">Services</a><a href="#">Contact</a></nav>
+  </header>
+  <section class="banner">
+    <h2>Student Services</h2>
+    <p>Everything you need on campus, in one place.</p>
+  </section>
+  <main id="services" class="grid">
+    <div class="card"><div class="icon">📚</div><h3>Library</h3>
+      <p>Search books, journals and e-resources.</p><a href="#">Explore</a></div>
+    <div class="card"><div class="icon">🚌</div><h3>Transport</h3>
+      <p>Bus routes, timings and pass details.</p><a href="#">Explore</a></div>
+    <div class="card"><div class="icon">🏠</div><h3>Hostel</h3>
+      <p>Room allotment, rules and mess menu.</p><a href="#">Explore</a></div>
+    <div class="card"><div class="icon">💼</div><h3>Placements</h3>
+      <p>Upcoming drives and training sessions.</p><a href="#">Explore</a></div>
+    <div class="card"><div class="icon">📝</div><h3>Examinations</h3>
+      <p>Schedules, hall tickets and results.</p><a href="#">Explore</a></div>
+  </main>
+  <footer>&copy; 2026 Malla Reddy University</footer>
+</body>
+</html>
